@@ -19,3 +19,4 @@ rebar3.crashdump
 node_modules/
 priv/js/
 priv/css/
+priv/index.html
