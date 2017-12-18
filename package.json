@@ -1,0 +1,42 @@
+{
+  "name": "bombinaid",
+  "version": "0.0.1",
+  "description": "Simple effective search engine for everyone.",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ajm113/bombinaid.com.git"
+  },
+  "keywords": [
+    "search",
+    "engine",
+    "erlang",
+    "preact",
+    "node"
+  ],
+  "author": "Andrew McRobb",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ajm113/bombinaid.com/issues"
+  },
+  "homepage": "https://github.com/ajm113/bombinaid.com#readme",
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "babelify": "^8.0.0",
+    "browserify": "^14.5.0",
+    "del": "^3.0.0",
+    "gulp": "^3.9.1",
+    "gulp-pug": "^3.3.0",
+    "gulp-sourcemaps": "^2.6.1",
+    "gulp-uglify": "^3.0.0",
+    "highland": "^2.11.1",
+    "rollupify": "^0.4.0",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0"
+  }
+}
