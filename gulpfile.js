@@ -26,7 +26,7 @@ gulp.task('js', () => {
 
     const browserifyEntry = ( entry ) => {
         return browserify({ entries: [entry.path], debug: true })
-            .transform(babelify, { presets: ['es2015'], sourceMaps: isDebug })
+            .transform(babelify, { presets: ['es2015'], sourceMaps: true })
             .transform(rollupify)
             .bundle()
             .on('error', (err) => { console.log(err.toString()); done(err); })
@@ -35,11 +35,11 @@ gulp.task('js', () => {
             .pipe(highland());
     };
 
-    return gulp.src('client/js')
+    return gulp.src('./client/js/app.js')
     .pipe(highland())
     .flatMap(browserifyEntry)
     .tap(file => {
-        file.path = file.path.replace('client/', '');
+        file.path = file.path.replace('client/js/', '');
     })
     .through(sourcemaps.init({ loadMaps: true }))
     .through(uglify())
