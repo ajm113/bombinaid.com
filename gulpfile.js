@@ -8,6 +8,7 @@ const   gulp = require('gulp'),
         buffer = require('vinyl-buffer'),
         babelify = require('babelify'),
         uglify = require('gulp-uglify'),
+        highland = require('highland'),
         rollupify = require('rollupify');
 
 /*
