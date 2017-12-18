@@ -1,16 +1,17 @@
 {application, bombinaid,
- [{description, "An OTP application"},
+ [{description, "Simple, effective search engine."},
   {vsn, "0.1.0"},
   {registered, []},
   {mod, { bombinaid_app, []}},
   {applications,
    [kernel,
-    stdlib
+    stdlib,
+    cowboy
    ]},
   {env,[]},
   {modules, []},
 
-  {maintainers, []},
+  {maintainers, ["Andrew McRobb"]},
   {licenses, ["Apache 2.0"]},
   {links, []}
  ]}.

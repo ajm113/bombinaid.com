@@ -15,6 +15,15 @@
 %%====================================================================
 
 start(_StartType, _StartArgs) ->
+    Dispatch = cowboy_router:compile([
+            {'_', [
+                {"/", cowboy_static, {priv_file, bombinaid, "index.html"}},
+                {"/assets/[...]", cowboy_static, {priv_dir, bombinaid, "assets"}}
+            ]}
+        ]),
+        {ok, _} = cowboy:start_clear(http, [{port, 8080}], #{
+            env => #{dispatch => Dispatch}
+    }),
     bombinaid_sup:start_link().
 
 %%--------------------------------------------------------------------
