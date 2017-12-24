@@ -12,6 +12,7 @@ const   gulp = require('gulp'),
         rollupify = require('rollupify'),
         util = require('gulp-util'),
         sync = require('gulp-sync')(gulp).sync,
+        notifier = require('node-notifier'),
         livereload = require('gulp-livereload'),
         child = require('child_process'),
         del = require('del'),
@@ -40,6 +41,10 @@ gulp.task('js', () => {
             .bundle()
             .on('error', (err) => {
                 console.log(err.toString());
+                notifier.notify({
+                    'title': 'Error Building Babel',
+                    'message': err.toString()
+                });
                 done(err);
             })
             .pipe(source(entry.path))
@@ -69,13 +74,6 @@ gulp.task('serve', () => {
         server.kill();
     }
 
-    // Make sure our priv directory is clean...
-    del([
-        './_build/default/lib/bombinaid'
-        ]).then(paths => {
-        console.log('Deleted files and folders:\n', paths.join('\n'));
-    });
-
     server = child.spawn('rebar3', ['shell']);
 
     if(server.stderr.length) {
@@ -87,6 +85,10 @@ gulp.task('serve', () => {
         for (let l in lines) {
             util.log(util.colors.red('Error: (rebar3 shell)' + lines[l]));
         }
+        notifier.notify({
+            'title': 'Error rebar shell',
+            'message': lines
+        });
     }
 
     // Display terminal informations
@@ -100,12 +102,12 @@ gulp.task('serve', () => {
 });
 
 gulp.task('watch:erlang', () => {
-    gulp.watch('./src/**/*.{.erl,src}', ['serve']);
+    gulp.watch('./src/**/*.{erl,src}', ['serve']);
 });
 
 gulp.task('watch', ()=> {
-    gulp.watch(['./client/js/**/*.{js,jsx}'], sync(['js', 'serve']));
-    gulp.watch(['./client/pug/**/*.pug'], sync(['html', 'serve']));
+    gulp.watch(['./client/js/**/*.{js,jsx}'], ['js']);
+    gulp.watch(['./client/pug/**/*.pug'], ['html']);
 
 });
 
