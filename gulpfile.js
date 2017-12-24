@@ -31,9 +31,8 @@ var server = null;
 */
 gulp.task('html', () =>  {
     return gulp.src(config.pug.input)
-        .pipe(highland())
-        .through(pug())
-        .through(gulp.dest(config.pug.output))
+        .pipe(pug())
+        .pipe(gulp.dest(config.pug.output))
         .pipe(livereload());
 });
 
@@ -47,11 +46,13 @@ gulp.task('js', () => {
             .bundle()
             .on('error', (err) => {
                 console.log(err.toString());
+
                 notifier.notify({
                     'title': NOTIFICATION_TITLE,
                     'message': err.toString()
                 });
-                done(err);
+
+
             })
             .pipe(source(entry.path))
             .pipe(buffer())
@@ -134,9 +135,9 @@ gulp.task('watch:erlang', () => {
 });
 
 gulp.task('watch', ()=> {
-    gulp.watch([config.js.input], ['js']);
-    gulp.watch([config.pug.input], ['html']);
-    gulp.watch([config.scss.input], ['scss']);
+    gulp.watch('./client/js/**/*.{js,jsx}', ['js']);
+    gulp.watch(config.pug.input, ['html']);
+    gulp.watch(config.scss.input, ['scss']);
 
 });
 
@@ -147,10 +148,5 @@ gulp.task('default', () => {
 
 gulp.task('dev', () => {
 
-    notifier.notify({
-        'title':  NOTIFICATION_TITLE,
-        'message': 'Starting dev server...'
-    });
-
-    gulp.start(sync(['html', 'js', 'scss', 'watch', 'watch:erlang', 'serve']));
+    gulp.start('html', 'js', 'scss', 'watch', 'watch:erlang', 'serve');
 });
