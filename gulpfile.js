@@ -9,7 +9,15 @@ const   gulp = require('gulp'),
         babelify = require('babelify'),
         uglify = require('gulp-uglify'),
         highland = require('highland'),
-        rollupify = require('rollupify');
+        rollupify = require('rollupify'),
+        util = require('gulp-util'),
+        sync = require('gulp-sync')(gulp).sync,
+        livereload = require('gulp-livereload'),
+        child = require('child_process'),
+        del = require('del'),
+        os = require('os');
+
+var server = null;
 
 /*
     Compile our pug file into compiled HTML
@@ -17,42 +25,95 @@ const   gulp = require('gulp'),
 gulp.task('html', () =>  {
     return gulp.src('./client/pug/*.pug')
         .pipe(highland())
-        .pipe(pug())
-        .pipe(gulp.dest('./priv'));
+        .through(pug())
+        .through(gulp.dest('./priv'))
+        .pipe(livereload());
 });
 
 
 gulp.task('js', () => {
-
     const browserifyEntry = ( entry ) => {
+
         return browserify({ entries: [entry.path], debug: true })
-            .transform(babelify, { presets: ['es2015'], sourceMaps: true })
+            .transform(babelify, { presets: ['es2015', 'preact'], sourceMaps: true })
             .transform(rollupify)
             .bundle()
-            .on('error', (err) => { console.log(err.toString()); done(err); })
+            .on('error', (err) => {
+                console.log(err.toString());
+                done(err);
+            })
             .pipe(source(entry.path))
             .pipe(buffer())
-            .pipe(highland());
+            .pipe(highland())
     };
 
-    return gulp.src('./client/js/app.js')
+    return gulp.src('./client/js/app.jsx')
     .pipe(highland())
     .flatMap(browserifyEntry)
     .tap(file => {
-        file.path = file.path.replace('client/js/', '');
+        let newFilepath = file.path.replace('client/js/', '');
+        file.path = newFilepath.replace('.jsx', '.js');
     })
     .through(sourcemaps.init({ loadMaps: true }))
     .through(uglify())
     .through(sourcemaps.write('./'))
-    .pipe(gulp.dest('./priv/js'));
+    .pipe(gulp.dest('./priv/assets/js'))
+    .pipe(livereload());
+});
+
+gulp.task('serve', () => {
+
+    livereload.listen();
+
+    if(server && server !== 'null') {
+        server.kill();
+    }
+
+    // Make sure our priv directory is clean...
+    del([
+        './_build/default/lib/bombinaid'
+        ]).then(paths => {
+        console.log('Deleted files and folders:\n', paths.join('\n'));
+    });
+
+    server = child.spawn('rebar3', ['shell']);
+
+    if(server.stderr.length) {
+        util.log(util.colors.red('Something went wrong running server: '));
+        let lines = server.stderr.toString()
+            .split('\n').filter((line) => {
+                return line.length;
+            });
+        for (let l in lines) {
+            util.log(util.colors.red('Error: (rebar3 shell)' + lines[l]));
+        }
+    }
+
+    // Display terminal informations
+    server.stderr.on('data', function(data) {
+        process.stdout.write(data.toString());
+    });
+    // Display terminal informations
+    server.stdout.on('data', function(data) {
+        process.stdout.write(data.toString());
+    });
+});
+
+gulp.task('watch:erlang', () => {
+    gulp.watch('./src/**/*.{.erl,src}', ['serve']);
 });
 
 gulp.task('watch', ()=> {
-    gulp.watch(['./client/js/**/*.{js,jsx}'], ['js']);
-    gulp.watch(['./client/pug/*.pug'], ['html']);
+    gulp.watch(['./client/js/**/*.{js,jsx}'], sync(['js', 'serve']));
+    gulp.watch(['./client/pug/**/*.pug'], sync(['html', 'serve']));
 
 });
 
 gulp.task('default', () => {
     gulp.start('js', 'html');
+});
+
+
+gulp.task('dev', () => {
+    gulp.start(sync(['html', 'js', 'watch', 'watch:erlang', 'serve']));
 });
