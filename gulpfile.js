@@ -15,19 +15,25 @@ const   gulp = require('gulp'),
         notifier = require('node-notifier'),
         livereload = require('gulp-livereload'),
         child = require('child_process'),
+        autoprefixer = require('gulp-autoprefixer'),
+        sass = require('gulp-sass'),
         del = require('del'),
-        os = require('os');
+        os = require('os'),
+        config =require('./gulp.config.js');
+
+const NOTIFICATION_TITLE = 'Bombinaid Task Manager';
 
 var server = null;
+
 
 /*
     Compile our pug file into compiled HTML
 */
 gulp.task('html', () =>  {
-    return gulp.src('./client/pug/*.pug')
+    return gulp.src(config.pug.input)
         .pipe(highland())
         .through(pug())
-        .through(gulp.dest('./priv'))
+        .through(gulp.dest(config.pug.output))
         .pipe(livereload());
 });
 
@@ -36,13 +42,13 @@ gulp.task('js', () => {
     const browserifyEntry = ( entry ) => {
 
         return browserify({ entries: [entry.path], debug: true })
-            .transform(babelify, { presets: ['es2015', 'preact'], sourceMaps: true })
+            .transform(babelify, config.babel.options)
             .transform(rollupify)
             .bundle()
             .on('error', (err) => {
                 console.log(err.toString());
                 notifier.notify({
-                    'title': 'Error Building Babel',
+                    'title': NOTIFICATION_TITLE,
                     'message': err.toString()
                 });
                 done(err);
@@ -52,7 +58,7 @@ gulp.task('js', () => {
             .pipe(highland())
     };
 
-    return gulp.src('./client/js/app.jsx')
+    return gulp.src(config.js.input)
     .pipe(highland())
     .flatMap(browserifyEntry)
     .tap(file => {
@@ -62,8 +68,17 @@ gulp.task('js', () => {
     .through(sourcemaps.init({ loadMaps: true }))
     .through(uglify())
     .through(sourcemaps.write('./'))
-    .pipe(gulp.dest('./priv/assets/js'))
+    .pipe(gulp.dest(config.js.output))
     .pipe(livereload());
+});
+
+gulp.task('scss', ()=> {
+    return gulp.src(config.scss.input)
+    .pipe(sourcemaps.init())
+    .pipe(sass(config.scss.options).on('error', sass.logError))
+    .pipe(autoprefixer(config.autoprefixer.options))
+    .pipe(sourcemaps.write('./'))
+    .pipe(gulp.dest(config.scss.output));
 });
 
 gulp.task('serve', () => {
@@ -85,14 +100,21 @@ gulp.task('serve', () => {
         for (let l in lines) {
             util.log(util.colors.red('Error: (rebar3 shell)' + lines[l]));
         }
+
         notifier.notify({
-            'title': 'Error rebar shell',
+            'title': NOTIFICATION_TITLE,
             'message': lines
         });
     }
 
     // Display terminal informations
     server.stderr.on('data', function(data) {
+
+        notifier.notify({
+            'title': NOTIFICATION_TITLE,
+            'message': data.toString()
+        });
+
         process.stdout.write(data.toString());
     });
     // Display terminal informations
@@ -101,21 +123,34 @@ gulp.task('serve', () => {
     });
 });
 
+gulp.task('clean', () => {
+  return del([config.del.input]).then(paths => {
+      console.log('Deleted files and folders:\n', paths.join('\n'));
+  });
+});
+
 gulp.task('watch:erlang', () => {
-    gulp.watch('./src/**/*.{erl,src}', ['serve']);
+    gulp.watch(config.erlang.input, ['serve']);
 });
 
 gulp.task('watch', ()=> {
-    gulp.watch(['./client/js/**/*.{js,jsx}'], ['js']);
-    gulp.watch(['./client/pug/**/*.pug'], ['html']);
+    gulp.watch([config.js.input], ['js']);
+    gulp.watch([config.pug.input], ['html']);
+    gulp.watch([config.scss.input], ['scss']);
 
 });
 
 gulp.task('default', () => {
-    gulp.start('js', 'html');
+    gulp.start('html', 'js', 'scss');
 });
 
 
 gulp.task('dev', () => {
-    gulp.start(sync(['html', 'js', 'watch', 'watch:erlang', 'serve']));
+
+    notifier.notify({
+        'title':  NOTIFICATION_TITLE,
+        'message': 'Starting dev server...'
+    });
+
+    gulp.start(sync(['html', 'js', 'scss', 'watch', 'watch:erlang', 'serve']));
 });
