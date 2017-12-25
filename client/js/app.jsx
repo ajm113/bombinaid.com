@@ -3,6 +3,7 @@ import { Router, route } from 'preact-router';
 import AsyncRoute from 'preact-async-route';
 
 import Home from './components/Home.jsx';
+import Error from './components/Error.jsx';
 
 function requireAll (r) { r.keys().forEach(r); }
 
@@ -13,7 +14,8 @@ import '../scss/style.scss';
 const Main = () => (
     <div class="container grid-lg" id="root">
         <Router>
-            <Home default path="/" />
+            <Home path="/" />
+            <Error type="404" default />
         </Router>
     </div>
 );
