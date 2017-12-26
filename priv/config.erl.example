@@ -1,0 +1,4 @@
+#{
+    api_key => "", %% Generated from the Google Dev Console
+    engine_id => "" %% Generated from the Google Custom Search Console. Usually named CX.
+}.
