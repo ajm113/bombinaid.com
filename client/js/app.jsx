@@ -17,13 +17,11 @@ function getSearch(url, cb, props){
 import '../scss/style.scss';
 
 const Main = () => (
-    <div class="container grid-lg">
-        <Router>
-            <Home path="/" />
-            <AsyncRoute path="/q/:query" getComponent={getSearch} loading={ () => <div>Thinking...</div> } />
-            <Error type="404" default />
-        </Router>
-    </div>
+    <Router>
+        <Home path="/" />
+        <AsyncRoute path="/q/:query" getComponent={getSearch} loading={ () => <div>Thinking...</div> } />
+        <Error type="404" default />
+    </Router>
 );
 
 render(<Main />, document.body);
