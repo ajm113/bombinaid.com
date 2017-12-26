@@ -33,7 +33,7 @@ handle_request(<<"GET">>, Query, [State], Req) ->
 
                     cowboy_req:reply(200, #{<<"content-type">> => <<"application/json">>}, jiffy:encode(Items), Req);
                 true->
-                    cowboy_req:reply(500, #{<<"content-type">> => <<"application/json">>}, Body, Req);
+                    cowboy_req:reply(500, #{<<"content-type">> => <<"application/json">>}, Body, Req)
             end;
         {error, Error}->
             io:format("Error: ~w~n", [Error]),
