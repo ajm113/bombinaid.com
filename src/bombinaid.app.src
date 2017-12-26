@@ -5,6 +5,8 @@
   {mod, { bombinaid_app, []}},
   {applications,
    [kernel,
+    inets,
+    ssl,
     stdlib,
     cowboy
    ]},
