@@ -1,6 +1,6 @@
 import { h, Component, render } from 'preact';
 import Header from './Header.jsx';
-import SearchResult from './SearchResult.jsx';
+import SearchResults from './SearchResults.jsx';
 import axios from 'axios';
 
 export default class Search extends Component {
@@ -9,7 +9,7 @@ export default class Search extends Component {
         super();
 
         this.state = {
-            searchResults: []
+            searchResults: null
         };
 
         var _this = this;
@@ -31,12 +31,11 @@ export default class Search extends Component {
                 <div class="container p-2" id="searchResults">
                     <div class="columns">
                         <div class="col-7 col-md-7 col-sm-12">
-                            {
-                                this.state.searchResults.map((result) => <SearchResult result={result} />)
-                            }
+                            <SearchResults searchResults={this.state.searchResults} />
                         </div>
                     </div>
                 </div>
+
             </div>
         );
     }

@@ -3,7 +3,6 @@ import { h, Component, render } from 'preact';
 export default class SearchResult extends Component {
 
     render({result}) {
-        console.log(result);
         return(
             <div class="tile">
                 <div class="tile-icon">
@@ -13,8 +12,8 @@ export default class SearchResult extends Component {
                 </div>
                 <div class="tile-content">
                     <a href={result.link} class="tile-title text-primary">{result.title}</a>
-                    <p class="tile-subtitle">{result.snippet}</p>
-                    <p class="text-success">{result.displayLink}</p>
+                    <p class="tile-subtitle text-gray">{result.snippet}</p>
+                    <p class="text-success display-link">{result.displayLink}</p>
                 </div>
             </div>
         );
