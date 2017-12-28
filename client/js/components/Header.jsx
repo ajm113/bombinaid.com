@@ -1,4 +1,4 @@
-import { h, Component, render } from 'preact';
+import { h, Component } from 'preact';
 import { route } from 'preact-router';
 
 export default class Header extends Component {

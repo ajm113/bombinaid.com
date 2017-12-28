@@ -1,5 +1,6 @@
+/* Globals: System */
 import { h, render } from 'preact';
-import { Router, route } from 'preact-router';
+import { Router } from 'preact-router';
 import AsyncRoute from 'preact-async-route';
 
 import Home from './components/Home.jsx';
@@ -9,9 +10,13 @@ function requireAll (r) { r.keys().forEach(r); }
 
 requireAll(require.context('../pug', true, /\.pug$/));
 
-function getSearch(url, cb, props){
+function getSearch(){
     return System.import('./components/Search.jsx').then(module => module.default);
 }
+
+const displayLoadingContent = () => {
+    return (<h2>Thinking...</h2>);
+};
 
 
 import '../scss/style.scss';
@@ -19,7 +24,7 @@ import '../scss/style.scss';
 const Main = () => (
     <Router>
         <Home path="/" />
-        <AsyncRoute path="/q/:query" getComponent={getSearch} loading={ () => <div>Thinking...</div> } />
+        <AsyncRoute path="/q/:query" getComponent={getSearch} loading={displayLoadingContent} />
         <Error type="404" default />
     </Router>
 );

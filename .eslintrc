@@ -1,18 +1,64 @@
 {
     "parser": "babel-eslint",
-
+    "extends": "eslint:recommended",
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true
+        }
+    },
+    "plugins": [
+        "react",
+        "jest"
+    ],
     "env": {
+        "shared-node-browser": true,
         "browser": true,      // browser global variables.
         "node": true,         // Node.js global variables and Node.js-specific rules.
         "amd": true,          // defines require() and define() as global variables as per the amd spec.
+        "es6": true,
+        "jest/globals": true
+    },
+    "settings": {
+        "react": {
+          "pragma": "h"
+        }
+    },
+    "globals": {
+        "sleep": 1,
+        "System": 1
     },
     "rules": {
-        "strict": 1,
+        "react/jsx-no-bind": [2, { "ignoreRefs": true }],
+        "react/jsx-no-duplicate-props": 2,
+        "react/self-closing-comp": 2,
+        "react/prefer-es6-class": 2,
+        "react/no-string-refs": 2,
+        "react/require-render-return": 2,
+        "react/no-find-dom-node": 2,
+        "react/no-is-mounted": 2,
+        "react/jsx-no-comment-textnodes": 2,
+        "react/jsx-curly-spacing": 2,
+        "react/jsx-no-undef": 2,
+        "react/jsx-uses-react": 2,
+        "react/jsx-uses-vars": 2,
+        "jest/no-disabled-tests": 1,
+        "jest/no-focused-tests": 1,
+        "jest/no-identical-title": 2,
+        "strict": [2, "never"],
         "valid-typeof": 1,
         "default-case": 1,
         "no-eval": 2,
         "no-undef": 2,
         "no-unused-vars": 1,
-        "no-use-before-define": 1
+        "no-use-before-define": 1,
+        "no-console": 0,
+        "no-redeclare": 2,
+        "no-else-return": 2,
+        "semi": 2,
+        "no-lonely-if": 2,
+        "camelcase": 1,
+        "max-nested-callbacks": [2, 3]
     }
 }

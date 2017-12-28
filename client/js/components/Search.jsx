@@ -1,4 +1,4 @@
-import { h, Component, render } from 'preact';
+import { h, Component } from 'preact';
 import Header from './Header.jsx';
 import SearchResults from './SearchResults.jsx';
 import axios from 'axios';

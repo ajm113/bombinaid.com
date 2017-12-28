@@ -1,4 +1,4 @@
-import { h, Component, render } from 'preact';
+import { h, Component } from 'preact';
 
 export default class SearchResult extends Component {
 
@@ -7,7 +7,7 @@ export default class SearchResult extends Component {
             <div class="tile">
                 <div class="tile-icon">
                     <div class="example-tile-icon">
-                        <i class="icon icon-file centered"></i>
+                        <i class="icon icon-file centered"/>
                     </div>
                 </div>
                 <div class="tile-content">

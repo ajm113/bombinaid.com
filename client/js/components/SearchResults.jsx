@@ -1,4 +1,4 @@
-import { h, Component, render } from 'preact';
+import { h, Component } from 'preact';
 import SearchResult from './SearchResult.jsx';
 
 export default class Search extends Component {
@@ -10,7 +10,7 @@ export default class Search extends Component {
     render({ searchResults }) {
 
         if (!searchResults) {
-            return (<div class="loading loading-lg"></div>);
+            return (<div class="loading loading-lg"/>);
         }
 
         if(!searchResults.length) {

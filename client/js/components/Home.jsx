@@ -1,4 +1,4 @@
-import { h, Component, render } from 'preact';
+import { h, Component } from 'preact';
 import { route } from 'preact-router';
 
 export default class Home extends Component {
@@ -19,7 +19,7 @@ export default class Home extends Component {
         this.setState({ query: e.target.value });
     };
 
-    render({}, { query }) {
+    render() {
         return(
             <div class="container grid-lg">
                 <div class="columns p-2">
@@ -30,7 +30,7 @@ export default class Home extends Component {
                             <div class="input-group has-icon-left">
                                 <input type="text" class="form-input" placeholder="Search!" onChange={this.updateQuery} />
                                 <button class="btn btn-primary input-group-btn hide-xs" type="submit" >Query</button>
-                                <i class="form-icon icon icon-search"></i>
+                                <i class="form-icon icon icon-search"/>
                             </div>
                             <div class="p-2">
                                 <button class="btn btn-primary btn-block show-xs" type="submit">Query</button>
