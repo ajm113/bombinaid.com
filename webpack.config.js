@@ -4,6 +4,22 @@ var path = require('path');
 const BUILD_DIR = path.resolve(__dirname, './priv/assets/js');
 const APP_DIR = path.resolve(__dirname, './client');
 
+const MinifyPlugin = require("babel-minify-webpack-plugin");
+
+// e.g: Run `$ PROD_ENV=1 webpack` to enable this.
+const isProduction = JSON.parse(process.env.PROD_ENV || '0');
+
+
+var plugins = [];
+
+if(isProduction) {
+    plugins.push(
+        new webpack.optimize.UglifyJsPlugin({
+          compress: { warnings: false }
+        })
+    );
+}
+
 const config = {
     entry: APP_DIR + '/js/app.jsx',
     output: {
@@ -11,8 +27,15 @@ const config = {
         filename: 'app.js',
         publicPath: '/assets/js/'
     },
+    devtool: 'source-map',
     module : {
         loaders : [
+            {
+                enforce: 'pre',
+                test: /\.jsx?/,
+                exclude: /node_modules/,
+                use: ['eslint-loader']
+            },
             {
                 test : /\.jsx?/,
                 include : APP_DIR + '/js',
@@ -34,7 +57,8 @@ const config = {
                 }]
             }
         ]
-    }
+    },
+    plugins: plugins
 };
 
 
