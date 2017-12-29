@@ -22,8 +22,6 @@ handle_request(<<"GET">>, Query, [State], Req) ->
     BaseUrl = "https://www.googleapis.com/customsearch/v1",
     BaseQueryUrl = BaseUrl ++ "?key=" ++ Key ++ "&cx=" ++ EngineId ++ "&q=" ++ http_uri:encode(Query),
 
-    io:format("~p~n", [BaseQueryUrl]),
-
     case httpc:request(get, {BaseQueryUrl, []}, [], []) of
         {ok, {{"HTTP/1.1", StatusCode, _}, _, Body}}->
 
