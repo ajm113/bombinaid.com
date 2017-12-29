@@ -20,7 +20,9 @@ handle_request(<<"GET">>, Query, [State], Req) ->
     EngineId = maps:get(engine_id, State),
 
     BaseUrl = "https://www.googleapis.com/customsearch/v1",
-    BaseQueryUrl = BaseUrl ++ "?key=" ++ Key ++ "&cx=" ++ EngineId ++ "&q=" ++ Query,
+    BaseQueryUrl = BaseUrl ++ "?key=" ++ Key ++ "&cx=" ++ EngineId ++ "&q=" ++ http_uri:encode(Query),
+
+    io:format("~p~n", [BaseQueryUrl]),
 
     case httpc:request(get, {BaseQueryUrl, []}, [], []) of
         {ok, {{"HTTP/1.1", StatusCode, _}, _, Body}}->
@@ -42,3 +44,8 @@ handle_request(<<"GET">>, Query, [State], Req) ->
 
 handle_request(_, _, _, Req)->
     cowboy_req:reply(405, Req).
+
+
+html_encode(Text) ->
+    [_ | DecodedHTML] = xmerl:export_simple([{#{}, [], 0, [], text, Text}], xmerl_xml),
+    erlang:iolist_to_binary(DecodedHTML).

@@ -14,7 +14,7 @@ export default class Search extends Component {
 
         var _this = this;
 
-        axios.get('/api/search/'+query)
+        axios.get('/api/search/'+encodeURIComponent(query))
         .then(function (response) {
             _this.setState({ searchResults: response.data });
         })
@@ -35,7 +35,6 @@ export default class Search extends Component {
                         </div>
                     </div>
                 </div>
-
             </div>
         );
     }
